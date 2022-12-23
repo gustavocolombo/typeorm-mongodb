@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Lesson } from './modules/lesson/infra/typeorm/entities/lesson.entity';
+import { LessonModule } from './modules/lesson/lesson.module';
 import { Student } from './modules/student/infra/typeorm/entities/student.entity';
 import { StudentModule } from './modules/student/student.module';
 
@@ -14,11 +16,12 @@ import { StudentModule } from './modules/student/student.module';
         useUnifiedTopology: true,
         useNewUrlParser: true,
         synchronize: true,
-        entities: [Student],
+        entities: [Student, Lesson],
         then: console.log(`Database started on port ${process.env.PORT}`),
       }),
     }),
     StudentModule,
+    LessonModule,
   ],
   controllers: [],
   providers: [],
