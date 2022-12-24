@@ -31,6 +31,9 @@ export class Lesson {
   @Column()
   teacher: string;
 
+  @Column()
+  code: string;
+
   @CreateDateColumn()
   createdAt: Date;
 
