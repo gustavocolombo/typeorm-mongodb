@@ -1,13 +1,13 @@
-import { IsArray, IsDate, IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsDate, IsOptional, IsString } from 'class-validator';
 import { DaysOfClass } from '../enums/days-of-class.enum';
 
-export class CreateLessonDTO {
+export class UpdateLessonDTO {
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   teacher: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   code: string;
 
   @IsString()
@@ -19,11 +19,7 @@ export class CreateLessonDTO {
   scheduleEnd: Date;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @IsArray()
   days: DaysOfClass[];
-
-  @IsString()
-  @IsNotEmpty()
-  collegeDiscipline: string;
 }
