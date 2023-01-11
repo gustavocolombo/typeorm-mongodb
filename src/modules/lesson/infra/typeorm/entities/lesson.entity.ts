@@ -2,10 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ObjectIdColumn,
+  OneToMany,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Student } from '../../../../student/infra/typeorm/entities/student.entity';
+import { Teacher } from '../../../../teacher/infra/typeorm/entities/teacher.entity';
 import { DaysOfClass } from '../../../enums/days-of-class.enum';
 
 @Entity('lesson')
@@ -29,10 +33,21 @@ export class Lesson {
   collegeDiscipline: string;
 
   @Column()
-  teacher: string;
+  code: string;
 
   @Column()
-  code: string;
+  teacherId: string;
+
+  @JoinColumn({ name: 'teacherId' })
+  @OneToMany(() => Teacher, (teacher) => teacher._id)
+  teachers: Teacher[];
+
+  @Column()
+  studentId?: string;
+
+  @JoinColumn({ name: 'studentId' })
+  @OneToMany(() => Student, (student) => student._id)
+  student?: Student[];
 
   @CreateDateColumn()
   createdAt: Date;
