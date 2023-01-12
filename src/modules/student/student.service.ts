@@ -65,6 +65,6 @@ export class StudentService {
       registration,
     });
 
-    return true ? deletedStudent.affected === 1 : false;
+    return deletedStudent.affected === 1 ? true : false;
   }
 }

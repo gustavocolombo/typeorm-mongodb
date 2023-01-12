@@ -20,7 +20,9 @@ describe('Testing user service', () => {
 
   const mockStudentRegistration = '470167';
 
-  const mockResponseDeleteStudent = true || false;
+  const mockResponseDeleteStudent = {
+    affected: 1,
+  };
 
   const mockUpdateStudent = {
     firstname: 'William',
