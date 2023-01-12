@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToMany,
   ObjectIdColumn,
   OneToMany,
   PrimaryColumn,
@@ -35,19 +36,16 @@ export class Lesson {
   @Column()
   code: string;
 
-  @Column()
-  teacherId: string;
-
-  @JoinColumn({ name: 'teacherId' })
   @OneToMany(() => Teacher, (teacher) => teacher._id)
-  teachers: Teacher[];
+  @JoinColumn()
+  teachers: Teacher;
 
-  @Column()
-  studentId?: string;
+  @ManyToMany(() => Student, (student) => student._id)
+  @JoinColumn()
+  student?: Student;
 
-  @JoinColumn({ name: 'studentId' })
-  @OneToMany(() => Student, (student) => student._id)
-  student?: Student[];
+  @Column({ default: 50 })
+  limitStudent: number;
 
   @CreateDateColumn()
   createdAt: Date;
