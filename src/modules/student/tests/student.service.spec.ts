@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -16,6 +17,13 @@ describe('Testing user service', () => {
     createdAt: '2023-01-11T01:52:46.414Z',
     updatedAt: '2023-01-11T01:52:46.414Z',
     _id: '63be166eaea673ad35bb04de',
+  };
+
+  const mockStudent = {
+    firstname: 'John',
+    lastname: 'Doe',
+    age: 21,
+    registration: '470165',
   };
 
   const mockStudentRegistration = '470167';
@@ -64,13 +72,6 @@ describe('Testing user service', () => {
 
   describe('Create student function', () => {
     it('should be able create a new student', async () => {
-      const mockStudent = {
-        firstname: 'John',
-        lastname: 'Doe',
-        age: 21,
-        registration: '470165',
-      };
-
       jest.spyOn(studentRepository, 'findOne').mockReturnValueOnce(null);
 
       const student = await studentService.create(mockStudent);
@@ -89,6 +90,12 @@ describe('Testing user service', () => {
       expect(student).toEqual(mockReturnStudent);
       expect(studentRepository.findOne).toHaveBeenCalledTimes(1);
     });
+    it('should not be able get a student', async () => {
+      jest.spyOn(studentRepository, 'findOne').mockReturnValueOnce(null);
+
+      expect(await studentService.index(mockStudentRegistration)).toEqual(null);
+      expect(studentRepository.findOne).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('Update student function', () => {
@@ -102,6 +109,18 @@ describe('Testing user service', () => {
       expect(studentRepository.findOne).toHaveBeenCalledTimes(2);
       expect(studentRepository.update).toHaveBeenCalledTimes(1);
     });
+
+    it('should not be able delete a student', async () => {
+      jest
+        .spyOn(studentRepository, 'findOne')
+        .mockRejectedValueOnce(Promise.reject(mockReturnStudent));
+
+      expect(
+        studentService.update(mockStudentRegistration, mockUpdateStudent),
+      ).rejects.toEqual(new BadRequestException('Student not found'));
+      expect(studentRepository.findOne).toHaveBeenCalledTimes(1);
+      expect(studentRepository.delete).toHaveBeenCalledTimes(0);
+    });
   });
 
   describe('Delete student function', () => {
@@ -111,6 +130,18 @@ describe('Testing user service', () => {
       expect(student).toEqual(true);
       expect(studentRepository.findOne).toHaveBeenCalledTimes(1);
       expect(studentRepository.delete).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not be able delete a student', async () => {
+      jest
+        .spyOn(studentRepository, 'findOne')
+        .mockRejectedValueOnce(Promise.reject(mockReturnStudent));
+
+      expect(studentService.delete(mockStudentRegistration)).rejects.toEqual(
+        new BadRequestException('Student not found'),
+      );
+      expect(studentRepository.findOne).toHaveBeenCalledTimes(1);
+      expect(studentRepository.delete).toHaveBeenCalledTimes(0);
     });
   });
 });
