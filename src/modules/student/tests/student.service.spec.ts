@@ -81,6 +81,14 @@ describe('Testing user service', () => {
       expect(studentRepository.create).toHaveBeenCalledTimes(1);
       expect(studentRepository.save).toHaveBeenCalledTimes(1);
     });
+
+    it('should not be able create new student', async () => {
+      expect(
+        Promise.reject(studentService.create(mockReturnStudent)),
+      ).rejects.toThrowError(
+        new BadRequestException('Student already exists!'),
+      );
+    });
   });
 
   describe('Get student function', () => {
