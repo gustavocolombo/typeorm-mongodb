@@ -22,76 +22,94 @@ export class TeacherService {
   ) {}
 
   async create(createTeacherDTO: CreateTeacherDTO): Promise<Teacher> {
-    const verifyTeacherExists = await this.teacherRepository.findOne({
-      where: { numberSiape: createTeacherDTO.numberSiape },
-    });
+    try {
+      const verifyTeacherExists = await this.teacherRepository.findOne({
+        where: { numberSiape: createTeacherDTO.numberSiape },
+      });
 
-    if (verifyTeacherExists)
-      throw new BadRequestException('Teacher with number SIAPE already exists');
+      if (verifyTeacherExists)
+        throw new BadRequestException(
+          'Teacher with number SIAPE already exists',
+        );
 
-    const teacher = await this.teacherRepository.save(
-      this.teacherRepository.create(createTeacherDTO),
-    );
+      const teacher = await this.teacherRepository.save(
+        this.teacherRepository.create(createTeacherDTO),
+      );
 
-    return teacher;
+      return teacher;
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   async index(numberSiape: number): Promise<Teacher | null> {
-    const teacher = await this.teacherRepository.findOne({
-      where: { numberSiape },
-    });
+    try {
+      const teacher = await this.teacherRepository.findOne({
+        where: { numberSiape },
+      });
 
-    return teacher ? teacher : null;
+      return teacher ? teacher : null;
+    } catch (error) {
+      console.log('err', error);
+    }
   }
 
   async update(
     numberSiape: number,
     updateTeacherDTO: UpdateTeacherDTO,
   ): Promise<UpdateTeacherResponse> {
-    const verifyTeacherExists = await this.teacherRepository.findOne({
-      where: { numberSiape },
-    });
+    try {
+      const verifyTeacherExists = await this.teacherRepository.findOne({
+        where: { numberSiape },
+      });
 
-    if (!verifyTeacherExists)
-      throw new BadRequestException('Teacher not found');
+      if (!verifyTeacherExists)
+        throw new BadRequestException('Teacher not found');
 
-    const updateTeacher = await this.teacherRepository.update(
-      updateTeacherDTO.numberSiape,
-      {
-        ...updateTeacherDTO,
-      },
-    );
+      const updateTeacher = await this.teacherRepository.update(
+        updateTeacherDTO.numberSiape,
+        {
+          ...updateTeacherDTO,
+        },
+      );
 
-    const teacher = await this.teacherRepository.findOne({
-      where: { _id: verifyTeacherExists._id },
-    });
+      const teacher = await this.teacherRepository.findOne({
+        where: { _id: verifyTeacherExists._id },
+      });
 
-    if (updateTeacher.affected === 1) {
-      return {
-        performed: true,
-        teacher,
-      };
-    } else {
-      return {
-        performed: false,
-        teacher,
-      };
+      if (updateTeacher.affected === 1) {
+        return {
+          performed: true,
+          teacher,
+        };
+      } else {
+        return {
+          performed: false,
+          teacher,
+        };
+      }
+    } catch (error) {
+      console.log('error', error);
     }
   }
 
   async delete(numberSiape: number): Promise<DeletedResultResponse> {
-    const teacher = await this.teacherRepository.delete(numberSiape);
+    try {
+      const teacher = await this.teacherRepository.delete(numberSiape);
 
-    if (teacher.affected === 1) {
-      return {
-        performed: true,
-        affected: 1,
-      };
-    } else {
-      return {
-        performed: false,
-        affected: 0,
-      };
+      if (teacher.affected === 1) {
+        return {
+          performed: true,
+          affected: 1,
+        };
+      } else {
+        return {
+          performed: false,
+          affected: 0,
+        };
+      }
+    } catch (error) {
+      console.log('err', error);
     }
   }
 }
