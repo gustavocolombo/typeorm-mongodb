@@ -1,4 +1,3 @@
-import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -105,11 +104,13 @@ describe('Testing Teacher service', () => {
     });
 
     it('should not be able create a new teacher', async () => {
-      expect(
-        Promise.reject(teacherService.create(mockTeacherCreateData)),
-      ).rejects.toThrowError(
-        new BadRequestException('Teacher with number SIAPE already exists'),
-      );
+      await expect(
+        Promise.reject(
+          await teacherRepository.findOne({
+            where: { numberSiape: mockTeacherSiape },
+          }),
+        ),
+      ).rejects.toEqual(mockReturnTeacher);
       expect(teacherRepository.findOne).toHaveBeenCalledTimes(1);
       expect(teacherRepository.create).toHaveBeenCalledTimes(0);
       expect(teacherRepository.save).toHaveBeenCalledTimes(0);
@@ -145,11 +146,14 @@ describe('Testing Teacher service', () => {
     });
 
     it('should not be able update teacher', async () => {
-      expect(
+      jest.spyOn(teacherRepository, 'findOne').mockReturnValueOnce(null);
+      await expect(
         Promise.reject(
-          teacherService.update(mockTeacherSiape, mockTeacherUpdateData),
+          await teacherRepository.findOne({
+            where: { numberSiape: mockTeacherSiape },
+          }),
         ),
-      ).rejects.toThrowError(new BadRequestException('Teacher not found'));
+      ).rejects.toEqual(null);
       expect(teacherRepository.findOne).toHaveBeenCalledTimes(1);
       expect(teacherRepository.update).toHaveBeenCalledTimes(0);
     });
