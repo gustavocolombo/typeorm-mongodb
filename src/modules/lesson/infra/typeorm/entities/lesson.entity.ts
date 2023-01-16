@@ -36,7 +36,7 @@ export class Lesson {
   @Column()
   code: string;
 
-  @OneToMany(() => Teacher, (teacher) => teacher._id)
+  @OneToMany(() => Teacher, (teacher) => teacher.lessonsList)
   @JoinColumn()
   teachers: Teacher;
 

@@ -2,10 +2,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   ObjectIdColumn,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Lesson } from '../../../../lesson/infra/typeorm/entities/lesson.entity';
 
 @Entity('entity')
 export class Teacher {
@@ -29,6 +32,10 @@ export class Teacher {
 
   @Column()
   lessons?: string[];
+
+  @ManyToOne(() => Lesson, (lesson) => lesson.teachers)
+  @JoinColumn()
+  lessonsList: Lesson[];
 
   @Column()
   numberSiape: number;
