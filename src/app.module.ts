@@ -14,12 +14,11 @@ import { TeacherModule } from './modules/teacher/teacher.module';
     TypeOrmModule.forRootAsync({
       useFactory: async () => ({
         type: 'mongodb',
-        url: process.env.DATABASE_URL,
+        url: 'mongodb+srv://mongo:mongotypeorm@mongo-typeorm.fegzh4u.mongodb.net/?retryWrites=true&w=majority',
         useUnifiedTopology: true,
         useNewUrlParser: true,
         synchronize: true,
         entities: [Student, Lesson, Teacher],
-        then: console.log(`Database started on port ${process.env.PORT}`),
       }),
     }),
     StudentModule,
